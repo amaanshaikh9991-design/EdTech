@@ -1,0 +1,94 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: #0f0f1a;
+  border-bottom: 4px solid #2d2d44;
+  gap: 20px;
+}
+
+.hamburger-btn {
+  display: flex;
+  background: transparent;
+  border: 2px solid #2d2d44;
+  color: #e0e0e0;
+  padding: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.hamburger-btn:hover {
+  border-color: #4ade80;
+  color: #4ade80;
+}
+
+.navbar-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #1a1a2e;
+  border: 2px solid #2d2d44;
+  padding: 10px 16px;
+  flex: 1;
+  max-width: 400px;
+}
+
+.navbar-search input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #e0e0e0;
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 13px;
+  width: 100%;
+}
+
+.navbar-search input::placeholder {
+  color: #6b6b80;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.notif-btn {
+  position: relative;
+  background: #1a1a2e;
+  border: 2px solid #2d2d44;
+  color: #e0e0e0;
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.notif-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #ef4444;
+  color: #fff;
+  font-family: 'MinecraftBold', monospace;
+  font-size: 10px;
+  padding: 2px 6px;
+  border: 2px solid #0f0f1a;
+}
+
+.navbar-date {
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 13px;
+  color: #a0a0b8;
+}
+
+@media (max-width: 768px) {
+  .navbar-date {
+    display: none;
+  }
+
+  .navbar-search {
+    max-width: 200px;
+  }
+}

@@ -1,0 +1,278 @@
+@font-face {
+  font-family: 'MinecraftRegular';
+  src: url('/fonts/MinecraftRegular-Bmg3.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'MinecraftBold';
+  src: url('/fonts/MinecraftBold-nMK1.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'MinecraftItalic';
+  src: url('/fonts/MinecraftItalic-R8Mo.otf') format('opentype');
+}
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 30%, #16213e 60%, #0f3460 100%);
+  font-family: 'MinecraftRegular', monospace;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(74, 222, 128, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74, 222, 128, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: gridMove 20s linear infinite;
+}
+
+@keyframes gridMove {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(40px, 40px); }
+}
+
+.login-container {
+  background: linear-gradient(145deg, #1e293b, #162032);
+  border: 3px solid #4ade80;
+  border-radius: 4px;
+  padding: 40px;
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  z-index: 1;
+  box-shadow:
+    0 0 30px rgba(74, 222, 128, 0.15),
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.login-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.sparkle-icon {
+  position: absolute;
+  top: -5px;
+  right: calc(50% - 30px);
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  50% { opacity: 0.5; transform: scale(1.2) rotate(15deg); }
+}
+
+.login-title {
+  font-family: 'MinecraftBold', monospace;
+  font-size: 36px;
+  color: #4ade80;
+  text-shadow: 3px 3px 0px #000, 0 0 20px rgba(74, 222, 128, 0.4);
+  margin: 0 0 8px 0;
+  letter-spacing: 2px;
+}
+
+.login-subtitle {
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 14px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.login-divider {
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #4ade80, transparent);
+  margin: 16px auto;
+}
+
+.login-tagline {
+  font-family: 'MinecraftItalic', monospace;
+  font-size: 13px;
+  color: #fbbf24;
+  margin: 0;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-label {
+  font-family: 'MinecraftBold', monospace;
+  font-size: 13px;
+  color: #4ade80;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mc-input {
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(74, 222, 128, 0.3);
+  border-radius: 2px;
+  padding: 14px 16px;
+  color: #f1f5f9;
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.mc-input::placeholder {
+  color: #4a5568;
+}
+
+.mc-input:focus {
+  border-color: #4ade80;
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.2), inset 0 0 10px rgba(74, 222, 128, 0.05);
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.login-error {
+  background: rgba(239, 68, 68, 0.15);
+  border: 2px solid rgba(239, 68, 68, 0.4);
+  border-radius: 2px;
+  padding: 10px 14px;
+  color: #f87171;
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 13px;
+  text-align: center;
+}
+
+.login-success {
+  background: rgba(74, 222, 128, 0.12);
+  border: 2px solid rgba(74, 222, 128, 0.4);
+  border-radius: 2px;
+  padding: 10px 14px;
+  color: #4ade80;
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 13px;
+  text-align: center;
+}
+
+.mc-btn {
+  font-family: 'MinecraftBold', monospace;
+  font-size: 16px;
+  padding: 16px;
+  border: 2px solid;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.mc-btn-primary {
+  background: linear-gradient(180deg, #4ade80, #22c55e);
+  border-color: #16a34a;
+  color: #000;
+  text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 0 #16a34a, 0 6px 15px rgba(74, 222, 128, 0.3);
+}
+
+.mc-btn-primary:hover:not(:disabled) {
+  background: linear-gradient(180deg, #6ee7a0, #4ade80);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 0 #16a34a, 0 8px 20px rgba(74, 222, 128, 0.4);
+}
+
+.mc-btn-primary:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #16a34a, 0 3px 10px rgba(74, 222, 128, 0.2);
+}
+
+.mc-btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.loading-dots {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.login-footer {
+  text-align: center;
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.login-features {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(74, 222, 128, 0.15);
+}
+
+.feature-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.feature-icon {
+  font-size: 20px;
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    margin: 16px;
+    padding: 28px 20px;
+  }
+
+  .login-title {
+    font-size: 28px;
+  }
+
+  .login-features {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+}
+
+.signup-link {
+  color: #4ade80;
+  text-decoration: none;
+  font-family: 'MinecraftBold', monospace;
+}
+
+.signup-link:hover {
+  text-decoration: underline;
+}

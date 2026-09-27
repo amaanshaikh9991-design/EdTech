@@ -1,0 +1,17 @@
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+html,
+body {
+  min-height: 100vh;
+  background: #0f0f23;
+}
+
+body {
+  min-width: 320px;
+}

@@ -1,0 +1,56 @@
+.chart-card {
+  background: #1a1a2e;
+  border: 3px solid #2d2d44;
+  padding: 20px;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #2d2d44;
+}
+
+.chart-title {
+  font-family: 'MinecraftBold', monospace;
+  font-size: 15px;
+  color: #e0e0e0;
+  letter-spacing: 1px;
+}
+
+.chart-badge {
+  font-family: 'MinecraftBold', monospace;
+  font-size: 10px;
+  background: #ef4444;
+  color: #fff;
+  padding: 3px 8px;
+  border: 2px solid #991b1b;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.chart-body {
+  min-height: 250px;
+}
+
+/* Recharts overrides for Minecraft theme */
+.chart-body .recharts-cartesian-grid-horizontal line,
+.chart-body .recharts-cartesian-grid-vertical line {
+  stroke: #2d2d44;
+}
+
+.chart-body .recharts-text {
+  font-family: 'MinecraftRegular', monospace !important;
+  fill: #a0a0b8 !important;
+  font-size: 11px !important;
+}
+
+.chart-body .recharts-tooltip-wrapper {
+  font-family: 'MinecraftRegular', monospace !important;
+}

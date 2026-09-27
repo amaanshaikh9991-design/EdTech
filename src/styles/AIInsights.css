@@ -1,0 +1,316 @@
+@font-face {
+  font-family: 'MinecraftRegular';
+  src: url('/fonts/MinecraftRegular-Bmg3.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'MinecraftBold';
+  src: url('/fonts/MinecraftBold-nMK1.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'MinecraftItalic';
+  src: url('/fonts/MinecraftItalic-R8Mo.otf') format('opentype');
+}
+
+.ai-page {
+  padding: 32px;
+  font-family: 'MinecraftRegular', monospace;
+  min-height: 100vh;
+  background: #0f0f23;
+}
+
+.page-title {
+  font-family: 'MinecraftBold', monospace;
+  font-size: 32px;
+  color: #4ade80;
+  text-shadow: 3px 3px 0px #000, 0 0 15px rgba(74, 222, 128, 0.3);
+  margin: 0 0 8px 0;
+}
+
+.page-subtitle {
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 14px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.refresh-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'MinecraftBold', monospace;
+  font-size: 13px;
+  padding: 10px 20px;
+  background: rgba(74, 222, 128, 0.1);
+  border: 2px solid rgba(74, 222, 128, 0.4);
+  border-radius: 2px;
+  color: #4ade80;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.refresh-btn:hover:not(:disabled) {
+  background: rgba(74, 222, 128, 0.2);
+  box-shadow: 0 0 15px rgba(74, 222, 128, 0.2);
+}
+
+.refresh-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.ai-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+}
+
+.insights-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-title {
+  font-family: 'MinecraftBold', monospace;
+  font-size: 18px;
+  color: #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5);
+}
+
+.insight-count {
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 13px;
+  color: #64748b;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 4px 12px;
+  border-radius: 2px;
+  border: 1px solid rgba(74, 222, 128, 0.2);
+}
+
+.loading-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: linear-gradient(145deg, #1e293b, #162032);
+  border: 2px solid rgba(74, 222, 128, 0.15);
+  border-radius: 4px;
+}
+
+.loading-brain {
+  font-size: 48px;
+  animation: brainPulse 1.5s ease-in-out infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes brainPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.loading-state p {
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 14px;
+  color: #94a3b8;
+  margin-bottom: 16px;
+}
+
+.loading-bar {
+  width: 200px;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 3px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.loading-bar-fill {
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, #4ade80, #22c55e);
+  border-radius: 3px;
+  animation: loadingSlide 1.5s ease-in-out infinite;
+}
+
+@keyframes loadingSlide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
+}
+
+.insights-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.insight-card {
+  background: linear-gradient(145deg, #1e293b, #162032);
+  border: 2px solid rgba(74, 222, 128, 0.15);
+  border-left: 4px solid;
+  border-radius: 4px;
+  padding: 20px;
+  transition: all 0.3s;
+}
+
+.insight-card:hover {
+  transform: translateX(4px);
+  border-color: rgba(74, 222, 128, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.insight-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.insight-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid currentColor;
+  flex-shrink: 0;
+}
+
+.insight-meta {
+  flex: 1;
+}
+
+.insight-title {
+  font-family: 'MinecraftBold', monospace;
+  font-size: 15px;
+  color: #f1f5f9;
+  margin: 0 0 4px 0;
+}
+
+.insight-time {
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.confidence-badge {
+  font-family: 'MinecraftBold', monospace;
+  font-size: 12px;
+  padding: 4px 10px;
+  border: 2px solid;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.insight-description {
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 13px;
+  color: #94a3b8;
+  line-height: 1.6;
+  margin: 0 0 16px 0;
+}
+
+.insight-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.action-btn {
+  font-family: 'MinecraftBold', monospace;
+  font-size: 12px;
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.action-btn:hover {
+  background: rgba(74, 222, 128, 0.1);
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.15);
+}
+
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.quick-actions-card {
+  background: linear-gradient(145deg, #1e293b, #162032);
+  border: 2px solid rgba(74, 222, 128, 0.15);
+  border-radius: 4px;
+  padding: 20px;
+}
+
+.quick-actions-card .section-title {
+  margin-bottom: 16px;
+  font-size: 16px;
+}
+
+.actions-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.action-chip {
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 11px;
+  padding: 8px 14px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.action-chip:hover {
+  background: rgba(74, 222, 128, 0.1);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 1024px) {
+  .ai-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .ai-page {
+    padding: 16px;
+  }
+
+  .page-title {
+    font-size: 24px;
+  }
+}

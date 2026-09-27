@@ -1,0 +1,201 @@
+.signup-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0a0a14;
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+}
+
+.signup-bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(74, 222, 128, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74, 222, 128, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: gridMove 20s linear infinite;
+}
+
+@keyframes gridMove {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(40px, 40px); }
+}
+
+.signup-container {
+  background: #1a1a2e;
+  border: 4px solid #2d2d44;
+  padding: 40px;
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 0 0 4px #0f0f1a, 0 0 0 8px #2d2d44;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.signup-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.signup-logo {
+  font-size: 56px;
+  display: block;
+  margin-bottom: 12px;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.signup-title {
+  font-family: 'MinecraftBold', monospace;
+  font-size: 28px;
+  color: #4ade80;
+  text-shadow: 3px 3px 0 #1a5c2a;
+  margin-bottom: 8px;
+  letter-spacing: 2px;
+}
+
+.signup-subtitle {
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 13px;
+  color: #a0a0b8;
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-family: 'MinecraftBold', monospace;
+  font-size: 12px;
+  color: #4ade80;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.form-input {
+  background: #0f0f1a;
+  border: 3px solid #2d2d44;
+  padding: 14px 16px;
+  color: #e0e0e0;
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.form-input:focus {
+  border-color: #4ade80;
+}
+
+.form-input::placeholder {
+  color: #4a4a60;
+}
+
+.form-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234ade80' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+}
+
+.form-select option {
+  background: #0f0f1a;
+  color: #e0e0e0;
+  font-family: 'MinecraftRegular', monospace;
+}
+
+.form-error {
+  background: #3d1a1a;
+  border: 2px solid #ef4444;
+  color: #ef4444;
+  padding: 10px;
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 12px;
+  text-align: center;
+}
+
+.signup-btn {
+  background: #1a5c2a;
+  border: 3px solid #4ade80;
+  color: #fff;
+  padding: 16px;
+  font-family: 'MinecraftBold', monospace;
+  font-size: 16px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: all 0.15s;
+  text-shadow: 2px 2px 0 #0f2a0f;
+}
+
+.signup-btn:hover {
+  background: #4ade80;
+  color: #0f0f1a;
+  text-shadow: none;
+  transform: translateY(-2px);
+}
+
+.signup-hint {
+  text-align: center;
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 12px;
+  color: #a0a0b8;
+}
+
+.login-link {
+  color: #4ade80;
+  text-decoration: none;
+  font-family: 'MinecraftBold', monospace;
+}
+
+.login-link:hover {
+  text-decoration: underline;
+}
+
+.signup-features {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 2px solid #2d2d44;
+}
+
+.feature {
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 11px;
+  color: #a0a0b8;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .signup-container {
+    padding: 24px;
+  }
+
+  .signup-title {
+    font-size: 22px;
+  }
+
+  .signup-features {
+    flex-direction: column;
+    gap: 12px;
+  }
+}

@@ -1,0 +1,116 @@
+@font-face {
+  font-family: 'MinecraftRegular';
+  src: url('/fonts/MinecraftRegular-Bmg3.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'MinecraftBold';
+  src: url('/fonts/MinecraftBold-nMK1.otf') format('opentype');
+}
+
+.stat-card {
+  background: linear-gradient(145deg, #1e293b, #162032);
+  border: 2px solid rgba(74, 222, 128, 0.15);
+  border-radius: 4px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  font-family: 'MinecraftRegular', monospace;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+.stat-card-green::before { background: linear-gradient(90deg, #4ade80, #22c55e); }
+.stat-card-blue::before { background: linear-gradient(90deg, #60a5fa, #3b82f6); }
+.stat-card-orange::before { background: linear-gradient(90deg, #fb923c, #f97316); }
+.stat-card-red::before { background: linear-gradient(90deg, #f87171, #ef4444); }
+.stat-card-purple::before { background: linear-gradient(90deg, #c084fc, #a855f7); }
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(74, 222, 128, 0.4);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3), 0 0 15px rgba(74, 222, 128, 0.1);
+}
+
+.stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.stat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid;
+}
+
+.stat-icon-green { background: rgba(74, 222, 128, 0.15); border-color: rgba(74, 222, 128, 0.4); color: #4ade80; }
+.stat-icon-blue { background: rgba(96, 165, 250, 0.15); border-color: rgba(96, 165, 250, 0.4); color: #60a5fa; }
+.stat-icon-orange { background: rgba(251, 146, 60, 0.15); border-color: rgba(251, 146, 60, 0.4); color: #fb923c; }
+.stat-icon-red { background: rgba(248, 113, 113, 0.15); border-color: rgba(248, 113, 113, 0.4); color: #f87171; }
+.stat-icon-purple { background: rgba(192, 132, 252, 0.15); border-color: rgba(192, 132, 252, 0.4); color: #c084fc; }
+
+.stat-trend {
+  font-family: 'MinecraftBold', monospace;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 2px;
+}
+
+.trend-up {
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.1);
+}
+
+.trend-down {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.1);
+}
+
+.stat-value {
+  font-family: 'MinecraftBold', monospace;
+  font-size: 32px;
+  color: #f1f5f9;
+  margin-bottom: 4px;
+  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
+}
+
+.stat-label {
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 13px;
+  color: #94a3b8;
+  margin-bottom: 12px;
+}
+
+.stat-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.stat-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 1s ease;
+}
+
+.stat-bar-green { background: linear-gradient(90deg, #4ade80, #22c55e); }
+.stat-bar-blue { background: linear-gradient(90deg, #60a5fa, #3b82f6); }
+.stat-bar-orange { background: linear-gradient(90deg, #fb923c, #f97316); }
+.stat-bar-red { background: linear-gradient(90deg, #f87171, #ef4444); }
+.stat-bar-purple { background: linear-gradient(90deg, #c084fc, #a855f7); }

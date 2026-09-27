@@ -1,0 +1,284 @@
+@font-face {
+  font-family: 'MinecraftRegular';
+  src: url('/fonts/MinecraftRegular-Bmg3.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'MinecraftBold';
+  src: url('/fonts/MinecraftBold-nMK1.otf') format('opentype');
+}
+
+.students-page {
+  padding: 32px;
+  font-family: 'MinecraftRegular', monospace;
+  min-height: 100vh;
+  background: #0f0f23;
+}
+
+.page-title {
+  font-family: 'MinecraftBold', monospace;
+  font-size: 32px;
+  color: #4ade80;
+  text-shadow: 3px 3px 0px #000, 0 0 15px rgba(74, 222, 128, 0.3);
+  margin: 0 0 8px 0;
+}
+
+.page-subtitle {
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 14px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.header-stats {
+  display: flex;
+  gap: 20px;
+}
+
+.mini-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(74, 222, 128, 0.15);
+  border-radius: 4px;
+  padding: 12px 20px;
+}
+
+.mini-stat-value {
+  font-family: 'MinecraftBold', monospace;
+  font-size: 24px;
+  color: #f1f5f9;
+}
+
+.mini-stat-label {
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.controls-bar {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.search-box {
+  flex: 1;
+  min-width: 250px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(74, 222, 128, 0.2);
+  border-radius: 2px;
+  padding: 10px 16px;
+  transition: all 0.2s;
+}
+
+.search-box:focus-within {
+  border-color: #4ade80;
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.15);
+}
+
+.search-box svg {
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.search-box input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: #f1f5f9;
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 14px;
+}
+
+.search-box input::placeholder {
+  color: #4a5568;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(74, 222, 128, 0.2);
+  border-radius: 2px;
+  padding: 8px 14px;
+}
+
+.filter-group svg {
+  color: #64748b;
+}
+
+.filter-group select {
+  background: none;
+  border: none;
+  outline: none;
+  color: #e2e8f0;
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.filter-group select option {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+.students-table-wrapper {
+  background: linear-gradient(145deg, #1e293b, #162032);
+  border: 2px solid rgba(74, 222, 128, 0.15);
+  border-radius: 4px;
+  overflow: hidden;
+  overflow-x: auto;
+}
+
+.students-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+
+.students-table thead {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.students-table th {
+  font-family: 'MinecraftBold', monospace;
+  font-size: 12px;
+  color: #4ade80;
+  text-align: left;
+  padding: 14px 16px;
+  border-bottom: 2px solid rgba(74, 222, 128, 0.2);
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.student-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  transition: all 0.2s;
+}
+
+.student-row:hover {
+  background: rgba(74, 222, 128, 0.05);
+}
+
+.student-row td {
+  padding: 14px 16px;
+  font-size: 13px;
+  color: #e2e8f0;
+  vertical-align: middle;
+}
+
+.student-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.student-avatar {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #4ade80, #22c55e);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'MinecraftBold', monospace;
+  font-size: 12px;
+  color: #000;
+  border: 2px solid rgba(74, 222, 128, 0.4);
+  flex-shrink: 0;
+}
+
+.student-name {
+  font-family: 'MinecraftBold', monospace;
+  font-size: 13px;
+  color: #f1f5f9;
+}
+
+.status-badge {
+  font-family: 'MinecraftBold', monospace;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 2px;
+  border: 1px solid currentColor;
+  white-space: nowrap;
+}
+
+.engagement-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 120px;
+}
+
+.engagement-bar-fill {
+  height: 8px;
+  border-radius: 2px;
+  flex: 1;
+  min-width: 40px;
+  transition: width 0.5s ease;
+}
+
+.engagement-value {
+  font-family: 'MinecraftBold', monospace;
+  font-size: 12px;
+  color: #e2e8f0;
+  min-width: 40px;
+}
+
+.grade-cell {
+  font-family: 'MinecraftBold', monospace;
+  font-size: 16px;
+}
+
+.last-active {
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #64748b;
+  font-family: 'MinecraftRegular', monospace;
+}
+
+@media (max-width: 768px) {
+  .students-page {
+    padding: 16px;
+  }
+
+  .header-stats {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .controls-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-box {
+    min-width: unset;
+  }
+}
