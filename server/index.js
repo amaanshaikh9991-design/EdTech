@@ -91,6 +91,41 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
+// 🟢 4. Signup Endpoint (Create a new Student in Neon DB)
+app.post('/api/signup', async (req, res) => {
+  const { name, email } = req.body;
+
+  try {
+    // 1. Check if a student with this email already exists
+    const existingStudent = await prisma.student.findUnique({
+      where: { email }
+    });
+
+    if (existingStudent) {
+      return res.status(400).json({ error: 'An account with this email already exists.' });
+    }
+
+    // 2. Create the new student in the database
+    const newStudent = await prisma.student.create({
+      data: {
+        name: name,
+        email: email,
+        avatar: '️', // Default Minecraft avatar
+        grade: 'A',  // Starting grade
+        engagement: 50, // Starting engagement
+        status: 'active',
+        lastActive: 'Just now',
+        trend: 'stable'
+      }
+    });
+
+    res.json(newStudent);
+  } catch (error) {
+    console.error("Signup Error:", error);
+    res.status(500).json({ error: "Failed to create account." });
+  }
+});
+
 // 🚀 Start Server
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

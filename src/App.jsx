@@ -1,52 +1,55 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from './context/AuthContext.jsx';
 import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
 import Dashboard from './pages/Dashboard.jsx';
-import Students from './pages/Students.jsx';
-import Analytics from './pages/Analytics.jsx';
-import AIInsights from './pages/AIInsights.jsx';
+import StudentChat from './pages/StudentChat.jsx';
 import Sidebar from './components/Sidebar.jsx';
 import Navbar from './components/Navbar.jsx';
-import StudentChat from './pages/StudentChat.jsx';
 
-function ProtectedRoute({ children }) {
-  const { user } = useAuth();
-  return user ? children : <Navigate to="/login" />;
-}
+// Simple Auth State (Since we removed the complex Context for simplicity)
+function App() {
+  const [user, setUser] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-function AppLayout({ children }) {
-  const [sidebarOpen, setSidebarOpen] = useState(
-    () => window.matchMedia('(min-width: 769px)').matches
-  );
+  const handleLogin = (userData) => {
+    setUser(userData);
+  };
 
-  return (
-    <div className="app-shell">
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <div className={`app-content ${sidebarOpen ? 'menu-open' : ''}`}>
-        <Navbar
-          onMenuClick={() => setSidebarOpen(!sidebarOpen)}
-          sidebarOpen={sidebarOpen}
-        />
-        <main style={{ flex: 1, padding: '24px', overflowY: 'auto' }}>{children}</main>
-      </div>
-    </div>
-  );
-}
+  const handleLogout = () => {
+    setUser(null);
+    window.location.href = '/login';
+  };
 
-export default function App() {
+  if (!user) {
+    return (
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<Login onLogin={handleLogin} />} />
+          <Route path="/signup" element={<Signup onLogin={handleLogin} />} />
+          <Route path="*" element={<Navigate to="/login" />} />
+        </Routes>
+      </BrowserRouter>
+    );
+  }
+
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/" element={<ProtectedRoute><AppLayout><Dashboard /></AppLayout></ProtectedRoute>} />
-        <Route path="/students" element={<ProtectedRoute><AppLayout><Students /></AppLayout></ProtectedRoute>} />
-        <Route path="/analytics" element={<ProtectedRoute><AppLayout><Analytics /></AppLayout></ProtectedRoute>} />
-        <Route path="/ai-insights" element={<ProtectedRoute><AppLayout><AIInsights /></AppLayout></ProtectedRoute>} />
-        <Route path="/chat" element={<ProtectedRoute><AppLayout><StudentChat /></AppLayout></ProtectedRoute>} />
-      </Routes>
+      <div style={{ display: 'flex', minHeight: '100vh' }}>
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} user={user} onLogout={handleLogout} />
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+          <Navbar onMenuClick={() => setSidebarOpen(!sidebarOpen)} user={user} />
+          <main style={{ flex: 1, padding: '24px', overflowY: 'auto' }}>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/chat" element={<StudentChat />} />
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          </main>
+        </div>
+      </div>
     </BrowserRouter>
   );
 }
+
+export default App;
