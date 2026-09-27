@@ -9,6 +9,7 @@ import Analytics from './pages/Analytics.jsx';
 import AIInsights from './pages/AIInsights.jsx';
 import Sidebar from './components/Sidebar.jsx';
 import Navbar from './components/Navbar.jsx';
+import StudentChat from './pages/StudentChat.jsx';
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
@@ -44,6 +45,7 @@ export default function App() {
         <Route path="/students" element={<ProtectedRoute><AppLayout><Students /></AppLayout></ProtectedRoute>} />
         <Route path="/analytics" element={<ProtectedRoute><AppLayout><Analytics /></AppLayout></ProtectedRoute>} />
         <Route path="/ai-insights" element={<ProtectedRoute><AppLayout><AIInsights /></AppLayout></ProtectedRoute>} />
+        <Route path="/chat" element={<ProtectedRoute><AppLayout><StudentChat /></AppLayout></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );
