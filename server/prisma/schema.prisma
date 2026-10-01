@@ -10,14 +10,17 @@ model Student {
   id         Int      @id @default(autoincrement())
   name       String
   email      String   @unique
+  school     String   @default("")
   avatar     String   @default("")
-  grade      String   @default("A")
+  grade      String   @default("N/A")
   engagement Int      @default(0)
   status     String   @default("active")
   lastActive String   @default("Just now")
   trend      String   @default("stable")
+  password   String
 
   chatHistory ChatMessage[]
+  tasks       Task[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -31,4 +34,23 @@ model ChatMessage {
   createdAt DateTime @default(now())
 
   student Student @relation(fields: [studentId], references: [id])
+}
+
+model Task {
+  id           Int       @id @default(autoincrement())
+  studentId    Int
+  title        String
+  subject      String
+  score        Float
+  maxScore     Float     @default(100)
+  resultFormat String    @default("percentage")
+  isComplete   Boolean   @default(false)
+  dueAt        DateTime?
+  completedAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([studentId, createdAt])
 }

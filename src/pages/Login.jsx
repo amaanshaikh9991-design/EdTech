@@ -1,28 +1,48 @@
-import React, { useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext.jsx'
-import { Pickaxe, Lock, User, Sparkles } from 'lucide-react'
-import '../styles/Login.css'
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Pickaxe, Lock, User, Sparkles } from 'lucide-react';
+import '../styles/Login.css';
 
-export default function Login() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const location = useLocation()
-  const navigate = useNavigate()
-  const { login } = useAuth()
+export default function Login({ onLogin }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    setError('')
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
 
-    if (login(email, password)) {
-      navigate('/')
-      return
+    try {
+      const response = await fetch('http://localhost:4000/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Login failed');
+      }
+
+      // ✅ Save the session!
+      localStorage.setItem('currentStudentId', data.id);
+      localStorage.setItem('currentStudentName', data.name);
+
+      if (onLogin) {
+        onLogin(data);
+      }
+      
+      navigate('/');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-
-    setError('Email or password is incorrect')
-  }
+  };
 
   return (
     <div className="login-page">
@@ -70,16 +90,12 @@ export default function Login() {
             />
           </div>
 
-          {location.state?.message && (
-            <div className="login-success" role="status">{location.state.message}</div>
-          )}
           {error && <div className="login-error">{error}</div>}
 
-          <button type="submit" className="mc-btn mc-btn-primary">
-            ⛏️ Enter World
+          <button type="submit" className="mc-btn mc-btn-primary" disabled={loading}>
+            {loading ? '⛏️ Entering World...' : '⛏️ Enter World'}
           </button>
 
-          {/* ✅ Signup link goes HERE, inside the form */}
           <div className="login-hint">
             Don't have an account?{' '}
             <Link to="/signup" className="signup-link">Sign up here</Link>
@@ -100,11 +116,11 @@ export default function Login() {
             <span>Real-time Analytics</span>
           </div>
           <div className="feature-item">
-            <span className="feature-icon"></span>
+            <span className="feature-icon">🎯</span>
             <span>Engagement Tracking</span>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

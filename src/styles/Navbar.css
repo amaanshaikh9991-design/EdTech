@@ -1,94 +1,335 @@
+/* ================================
+   NAVBAR
+================================ */
+
 .navbar {
+  position: fixed;
+  top: 0;
+  left: 295px;
+  right: 0;
+
+  height: 80px;
+
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 16px 24px;
+
+  padding: 0 24px;
+  box-sizing: border-box;
+
   background: #0f0f1a;
-  border-bottom: 4px solid #2d2d44;
+  border-bottom: 3px solid #2d2d44;
+
   gap: 20px;
+
+  z-index: 9999;
 }
 
+
+/* ================================
+   HAMBURGER BUTTON
+================================ */
+
 .hamburger-btn {
+  width: 46px;
+  height: 46px;
+
   display: flex;
-  background: transparent;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  background: #1a1a2e;
   border: 2px solid #2d2d44;
+  border-radius: 6px;
+
   color: #e0e0e0;
-  padding: 8px;
+
   cursor: pointer;
-  transition: all 0.15s;
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .hamburger-btn:hover {
   border-color: #4ade80;
   color: #4ade80;
+
+  transform: scale(1.05);
+
+  box-shadow: 0 0 15px rgba(74, 222, 128, 0.3);
 }
 
+.hamburger-btn:active {
+  transform: scale(0.95);
+}
+
+
+/* ================================
+   SEARCH
+================================ */
+
 .navbar-search {
+  height: 44px;
+
   display: flex;
   align-items: center;
+
   gap: 10px;
+
+  flex: 1;
+  max-width: 500px;
+
+  padding: 0 14px;
+
+  box-sizing: border-box;
+
   background: #1a1a2e;
   border: 2px solid #2d2d44;
-  padding: 10px 16px;
-  flex: 1;
-  max-width: 400px;
+  border-radius: 6px;
+
+  color: #8f8fa8;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.navbar-search:focus-within {
+  border-color: #4ade80;
+
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.15);
 }
 
 .navbar-search input {
+  width: 100%;
+
   background: transparent;
   border: none;
   outline: none;
+
   color: #e0e0e0;
+
   font-family: 'MinecraftRegular', monospace;
   font-size: 13px;
-  width: 100%;
 }
 
 .navbar-search input::placeholder {
   color: #6b6b80;
 }
 
+
+/* ================================
+   RIGHT SIDE
+================================ */
+
 .navbar-actions {
+  margin-left: auto;
+
   display: flex;
   align-items: center;
+
   gap: 16px;
 }
 
+
+/* ================================
+   NOTIFICATION
+================================ */
+
 .notif-btn {
   position: relative;
-  background: #1a1a2e;
-  border: 2px solid #2d2d44;
-  color: #e0e0e0;
-  padding: 10px;
-  cursor: pointer;
+
+  width: 44px;
+  height: 44px;
+
   display: flex;
   align-items: center;
+  justify-content: center;
+
+  background: #1a1a2e;
+  border: 2px solid #2d2d44;
+  border-radius: 6px;
+
+  color: #e0e0e0;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
+
+.notif-btn:hover {
+  border-color: #fbbf24;
+  color: #fbbf24;
+
+  transform: translateY(-2px);
+}
+
+
+/* Notification number */
 
 .notif-badge {
   position: absolute;
-  top: -6px;
-  right: -6px;
+
+  top: -7px;
+  right: -7px;
+
+  min-width: 20px;
+  height: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 5px;
+
+  box-sizing: border-box;
+
   background: #ef4444;
-  color: #fff;
+
+  color: white;
+
+  border: 2px solid #0f0f1a;
+  border-radius: 10px;
+
   font-family: 'MinecraftBold', monospace;
   font-size: 10px;
-  padding: 2px 6px;
-  border: 2px solid #0f0f1a;
 }
 
-.navbar-date {
+
+/* ================================
+   USER
+================================ */
+
+.navbar-user {
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 0 14px;
+
+  box-sizing: border-box;
+
+  background: #1a1a2e;
+  border: 2px solid #2d2d44;
+  border-radius: 6px;
+}
+
+.user-avatar-small {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+}
+
+.user-name-small {
+  color: #e0e0e0;
+
   font-family: 'MinecraftRegular', monospace;
   font-size: 13px;
-  color: #a0a0b8;
+
+  white-space: nowrap;
 }
 
-@media (max-width: 768px) {
-  .navbar-date {
-    display: none;
+
+/* ================================
+   DATE
+================================ */
+
+.navbar-date {
+  color: #a0a0b8;
+
+  font-family: 'MinecraftRegular', monospace;
+  font-size: 13px;
+}
+
+
+/* ================================
+   TABLET
+================================ */
+
+@media (max-width: 1000px) {
+
+  .navbar {
+    left: 250px;
   }
 
   .navbar-search {
-    max-width: 200px;
+    max-width: 350px;
   }
+
+}
+
+
+/* ================================
+   MOBILE
+================================ */
+
+@media (max-width: 768px) {
+
+  .navbar {
+    left: 0;
+
+    height: 70px;
+
+    padding: 0 14px;
+
+    gap: 12px;
+  }
+
+  .navbar-search {
+    max-width: none;
+
+    height: 42px;
+  }
+
+  .navbar-actions {
+    gap: 8px;
+  }
+
+  .navbar-user {
+    padding: 0 8px;
+  }
+
+  .user-name-small {
+    display: none;
+  }
+
+}
+
+
+/* ================================
+   SMALL MOBILE
+================================ */
+
+@media (max-width: 500px) {
+
+  .navbar-search {
+    flex: 1;
+  }
+
+  .navbar-search input {
+    font-size: 11px;
+  }
+
+  .notif-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .hamburger-btn {
+    width: 40px;
+    height: 40px;
+  }
+
 }

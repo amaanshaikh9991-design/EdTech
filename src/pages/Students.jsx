@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { Search, Filter, MoreVertical, TrendingUp, TrendingDown, Minus } from 'lucide-react'
 import '../styles/Students.css'
 
@@ -29,9 +30,17 @@ const trendIcons = {
 }
 
 export default function Students() {
-  const [search, setSearch] = useState('')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const search = searchParams.get('q') || ''
   const [filterStatus, setFilterStatus] = useState('all')
   const [sortBy, setSortBy] = useState('name')
+
+  const handleSearchChange = (value) => {
+    const nextParams = new URLSearchParams(searchParams)
+    if (value) nextParams.set('q', value)
+    else nextParams.delete('q')
+    setSearchParams(nextParams, { replace: true })
+  }
 
   const filtered = studentsData
     .filter(s => s.name.toLowerCase().includes(search.toLowerCase()))
@@ -72,7 +81,7 @@ export default function Students() {
             type="text"
             placeholder="Search students..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
           />
         </div>
 

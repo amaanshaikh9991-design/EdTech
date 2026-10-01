@@ -39,6 +39,31 @@
   gap: 16px;
 }
 
+.analytics-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  margin: 0 0 24px;
+  padding: 16px 0;
+  border-top: 1px solid #2d2d44;
+  border-bottom: 1px solid #2d2d44;
+}
+
+.analytics-summary div {
+  display: grid;
+  gap: 5px;
+}
+
+.analytics-summary strong {
+  color: #4ade80;
+  font: 22px 'MinecraftBold', monospace;
+}
+
+.analytics-summary span {
+  color: #94a3b8;
+  font-size: 11px;
+}
+
 .period-selector {
   display: flex;
   gap: 8px;
@@ -106,6 +131,26 @@
   color: #e2e8f0;
   margin: 0 0 20px 0;
   text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5);
+}
+
+.analytics-empty {
+  display: flex;
+  min-height: 220px;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  color: #94a3b8;
+  font: 13px 'MinecraftRegular', monospace;
+  text-align: center;
+}
+
+.analytics-page .recharts-text,
+.analytics-page .recharts-tooltip-wrapper {
+  font-family: 'MinecraftRegular', monospace;
+}
+
+.analytics-page .recharts-text {
+  fill: #94a3b8;
 }
 
 @media (max-width: 1024px) {

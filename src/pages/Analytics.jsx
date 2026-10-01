@@ -1,196 +1,154 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
 import {
-  LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
+  BarChart, Bar, PieChart, Pie, Cell, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
-  ComposedChart, Area
-} from 'recharts'
-import '../styles/Analytics.css'
+} from 'recharts';
+import '../styles/Analytics.css';
 
-const monthlyRetention = [
-  { month: 'Jan', retention: 95, engagement: 82 },
-  { month: 'Feb', retention: 92, engagement: 78 },
-  { month: 'Mar', retention: 88, engagement: 75 },
-  { month: 'Apr', retention: 91, engagement: 80 },
-  { month: 'May', retention: 87, engagement: 72 },
-  { month: 'Jun', retention: 83, engagement: 68 },
-  { month: 'Jul', retention: 89, engagement: 76 },
-  { month: 'Aug', retention: 93, engagement: 84 },
-  { month: 'Sep', retention: 96, engagement: 88 },
-]
-
-const skillRadar = [
-  { skill: 'Problem Solving', A: 85, B: 70 },
-  { skill: 'Collaboration', A: 78, B: 82 },
-  { skill: 'Communication', A: 90, B: 75 },
-  { skill: 'Critical Thinking', A: 72, B: 68 },
-  { skill: 'Creativity', A: 88, B: 90 },
-  { skill: 'Time Mgmt', A: 65, B: 72 },
-]
-
-const assignmentCompletion = [
-  { class: 'Math 101', completed: 92, late: 5, missing: 3 },
-  { class: 'Science 201', completed: 85, late: 10, missing: 5 },
-  { class: 'English 102', completed: 78, late: 12, missing: 10 },
-  { class: 'History 301', completed: 95, late: 3, missing: 2 },
-  { class: 'Art 101', completed: 98, late: 1, missing: 1 },
-]
-
-const timeDistribution = [
-  { name: 'Video Lectures', value: 35, color: '#4ade80' },
-  { name: 'Assignments', value: 25, color: '#60a5fa' },
-  { name: 'Discussions', value: 20, color: '#fbbf24' },
-  { name: 'Quizzes', value: 12, color: '#c084fc' },
-  { name: 'Reading', value: 8, color: '#fb923c' },
-]
-
-const weeklyTrend = [
-  { week: 'W1', active: 180, new: 12, dropped: 3 },
-  { week: 'W2', active: 195, new: 8, dropped: 5 },
-  { week: 'W3', active: 188, new: 15, dropped: 2 },
-  { week: 'W4', active: 210, new: 10, dropped: 4 },
-  { week: 'W5', active: 225, new: 18, dropped: 1 },
-  { week: 'W6', active: 240, new: 14, dropped: 3 },
-  { week: 'W7', active: 238, new: 6, dropped: 6 },
-  { week: 'W8', active: 248, new: 12, dropped: 2 },
-]
+const api = 'http://localhost:4000/api';
+const chartStyle = {
+  contentStyle: {
+    background: '#1e293b',
+    border: '2px solid #4ade80',
+    borderRadius: '2px',
+    fontFamily: 'MinecraftRegular, monospace',
+    color: '#f1f5f9',
+  },
+};
 
 export default function Analytics() {
+  const studentId = localStorage.getItem('currentStudentId');
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(Boolean(studentId));
+  const [error, setError] = useState(studentId ? '' : 'Sign in to see your analytics.');
+
+  useEffect(() => {
+    const loadTasks = async () => {
+      try {
+        const response = await fetch(`${api}/students/${studentId}`);
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Could not load your analytics.');
+        setTasks(data.tasks || []);
+      } catch (loadError) {
+        setError(loadError.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (studentId) loadTasks();
+  }, [studentId]);
+
+  const completedTasks = tasks.filter((task) => task.isComplete);
+  const taskStatus = [
+    { name: 'Completed', value: completedTasks.length, color: '#4ade80' },
+    { name: 'In progress', value: tasks.length - completedTasks.length, color: '#fbbf24' },
+  ].filter((item) => item.value > 0);
+  const subjectStats = Object.values(tasks.reduce((subjects, task) => {
+    const current = subjects[task.subject] || { subject: task.subject, score: 0, maxScore: 0, completed: 0, pending: 0 };
+    if (task.isComplete) {
+      current.score += task.score;
+      current.maxScore += task.maxScore;
+      current.completed += 1;
+    } else {
+      current.pending += 1;
+    }
+    subjects[task.subject] = current;
+    return subjects;
+  }, {})).map((subject) => ({
+    ...subject,
+    average: subject.maxScore ? Math.round((subject.score / subject.maxScore) * 100) : 0,
+  }));
+  const assessmentScores = [...completedTasks]
+    .sort((first, second) => new Date(first.completedAt) - new Date(second.completedAt))
+    .map((task) => ({
+      name: task.title.length > 20 ? `${task.title.slice(0, 19)}...` : task.title,
+      percentage: Math.round((task.score / task.maxScore) * 100),
+    }));
+  const totalPossible = completedTasks.reduce((sum, task) => sum + task.maxScore, 0);
+  const averageMark = totalPossible
+    ? Math.round((completedTasks.reduce((sum, task) => sum + task.score, 0) / totalPossible) * 100)
+    : null;
+
   return (
     <div className="analytics-page">
       <div className="page-header">
         <div>
           <h1 className="page-title">📊 Analytics</h1>
-          <p className="page-subtitle">Deep dive into performance metrics</p>
-        </div>
-        <div className="period-selector">
-          <button className="period-btn active">This Semester</button>
-          <button className="period-btn">Last Semester</button>
-          <button className="period-btn">All Time</button>
+          <p className="page-subtitle">Your marks and task progress, from your own records.</p>
         </div>
       </div>
+
+      {error && <p className="analytics-empty" role="alert">{error}</p>}
+      {!error && !loading && (
+        <div className="analytics-summary" aria-live="polite">
+          <div><strong>{averageMark === null ? '—' : `${averageMark}%`}</strong><span>Average mark</span></div>
+          <div><strong>{completedTasks.length}</strong><span>Tasks completed</span></div>
+          <div><strong>{tasks.length - completedTasks.length}</strong><span>In progress</span></div>
+        </div>
+      )}
 
       <div className="analytics-grid">
-        <div className="chart-card chart-full">
-          <h3 className="chart-title">📈 Retention & Engagement Over Time</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <ComposedChart data={monthlyRetention}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(74,222,128,0.1)" />
-              <XAxis dataKey="month" stroke="#64748b" style={{ fontFamily: 'MinecraftRegular, monospace', fontSize: 12 }} />
-              <YAxis stroke="#64748b" style={{ fontFamily: 'MinecraftRegular, monospace', fontSize: 12 }} />
-              <Tooltip
-                contentStyle={{
-                  background: '#1e293b',
-                  border: '2px solid #4ade80',
-                  borderRadius: '2px',
-                  fontFamily: 'MinecraftRegular, monospace',
-                  color: '#f1f5f9'
-                }}
-              />
-              <Area type="monotone" dataKey="retention" fill="rgba(74,222,128,0.1)" stroke="#4ade80" strokeWidth={2} name="Retention %" />
-              <Line type="monotone" dataKey="engagement" stroke="#60a5fa" strokeWidth={3} dot={{ fill: '#60a5fa', r: 4 }} name="Engagement %" />
-            </ComposedChart>
-          </ResponsiveContainer>
-        </div>
+        <section className="chart-card">
+          <h2 className="chart-title">📚 Average Mark by Subject</h2>
+          {loading ? <p className="analytics-empty">Loading your marks...</p> : subjectStats.length ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={subjectStats}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(74,222,128,0.1)" />
+                <XAxis dataKey="subject" stroke="#64748b" />
+                <YAxis domain={[0, 100]} stroke="#64748b" />
+                <Tooltip {...chartStyle} />
+                <Bar dataKey="average" fill="#4ade80" radius={[2, 2, 0, 0]} name="Average mark %" />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : <p className="analytics-empty">Subject results appear after you complete a task with marks.</p>}
+        </section>
 
-        <div className="chart-card">
-          <h3 className="chart-title">🎯 Skill Assessment Radar</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <RadarChart data={skillRadar}>
-              <PolarGrid stroke="rgba(74,222,128,0.2)" />
-              <PolarAngleAxis dataKey="skill" stroke="#64748b" style={{ fontFamily: 'MinecraftRegular, monospace', fontSize: 10 }} />
-              <PolarRadiusAxis stroke="#64748b" style={{ fontFamily: 'MinecraftRegular, monospace', fontSize: 10 }} />
-              <Radar name="Class A" dataKey="A" stroke="#4ade80" fill="#4ade80" fillOpacity={0.2} strokeWidth={2} />
-              <Radar name="Class B" dataKey="B" stroke="#60a5fa" fill="#60a5fa" fillOpacity={0.2} strokeWidth={2} />
-              <Tooltip
-                contentStyle={{
-                  background: '#1e293b',
-                  border: '2px solid #4ade80',
-                  borderRadius: '2px',
-                  fontFamily: 'MinecraftRegular, monospace',
-                  color: '#f1f5f9'
-                }}
-              />
-            </RadarChart>
-          </ResponsiveContainer>
-        </div>
+        <section className="chart-card">
+          <h2 className="chart-title">✅ Task Completion</h2>
+          {loading ? <p className="analytics-empty">Loading your tasks...</p> : taskStatus.length ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie data={taskStatus} cx="50%" cy="50%" outerRadius={100} dataKey="value" label={({ name, value }) => `${name}: ${value}`}>
+                  {taskStatus.map((entry) => <Cell key={entry.name} fill={entry.color} stroke="rgba(0,0,0,0.3)" strokeWidth={2} />)}
+                </Pie>
+                <Tooltip {...chartStyle} />
+              </PieChart>
+            </ResponsiveContainer>
+          ) : <p className="analytics-empty">Add tasks to see your completion breakdown.</p>}
+        </section>
 
-        <div className="chart-card">
-          <h3 className="chart-title"> Time Distribution</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={timeDistribution}
-                cx="50%"
-                cy="50%"
-                outerRadius={100}
-                dataKey="value"
-                label={({ name, value }) => `${name}: ${value}%`}
-                labelLine={{ stroke: '#64748b' }}
-              >
-                {timeDistribution.map((entry, index) => (
-                  <Cell key={index} fill={entry.color} stroke="rgba(0,0,0,0.3)" strokeWidth={2} />
-                ))}
-              </Pie>
-              <Tooltip
-                contentStyle={{
-                  background: '#1e293b',
-                  border: '2px solid #4ade80',
-                  borderRadius: '2px',
-                  fontFamily: 'MinecraftRegular, monospace',
-                  color: '#f1f5f9'
-                }}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
+        <section className="chart-card chart-full">
+          <h2 className="chart-title">📝 Marks by Completed Task</h2>
+          {loading ? <p className="analytics-empty">Loading your marks...</p> : assessmentScores.length ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={assessmentScores}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(74,222,128,0.1)" />
+                <XAxis dataKey="name" stroke="#64748b" />
+                <YAxis domain={[0, 100]} stroke="#64748b" />
+                <Tooltip {...chartStyle} />
+                <Line type="monotone" dataKey="percentage" stroke="#60a5fa" strokeWidth={3} dot={{ fill: '#4ade80', r: 5 }} name="Mark %" />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : <p className="analytics-empty">Completed task marks will appear here.</p>}
+        </section>
 
-        <div className="chart-card chart-full">
-          <h3 className="chart-title">📋 Assignment Completion by Class</h3>
-          <ResponsiveContainer width="100%" height={280}>
-            <BarChart data={assignmentCompletion} barGap={4} barCategoryGap="20%">
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(74,222,128,0.1)" />
-              <XAxis dataKey="class" stroke="#64748b" style={{ fontFamily: 'MinecraftRegular, monospace', fontSize: 11 }} />
-              <YAxis stroke="#64748b" style={{ fontFamily: 'MinecraftRegular, monospace', fontSize: 12 }} />
-              <Tooltip
-                contentStyle={{
-                  background: '#1e293b',
-                  border: '2px solid #4ade80',
-                  borderRadius: '2px',
-                  fontFamily: 'MinecraftRegular, monospace',
-                  color: '#f1f5f9'
-                }}
-              />
-              <Bar dataKey="completed" stackId="a" fill="#4ade80" radius={[0, 0, 0, 0]} name="Completed %" />
-              <Bar dataKey="late" stackId="a" fill="#fbbf24" name="Late %" />
-              <Bar dataKey="missing" stackId="a" fill="#f87171" radius={[2, 2, 0, 0]} name="Missing %" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="chart-card chart-full">
-          <h3 className="chart-title">👥 Active Students Trend</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={weeklyTrend}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(74,222,128,0.1)" />
-              <XAxis dataKey="week" stroke="#64748b" style={{ fontFamily: 'MinecraftRegular, monospace', fontSize: 12 }} />
-              <YAxis stroke="#64748b" style={{ fontFamily: 'MinecraftRegular, monospace', fontSize: 12 }} />
-              <Tooltip
-                contentStyle={{
-                  background: '#1e293b',
-                  border: '2px solid #4ade80',
-                  borderRadius: '2px',
-                  fontFamily: 'MinecraftRegular, monospace',
-                  color: '#f1f5f9'
-                }}
-              />
-              <Line type="monotone" dataKey="active" stroke="#4ade80" strokeWidth={3} dot={{ fill: '#4ade80', r: 5 }} name="Active" />
-              <Line type="monotone" dataKey="new" stroke="#60a5fa" strokeWidth={2} dot={{ fill: '#60a5fa', r: 4 }} name="New" />
-              <Line type="monotone" dataKey="dropped" stroke="#f87171" strokeWidth={2} dot={{ fill: '#f87171', r: 4 }} name="Dropped" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+        <section className="chart-card chart-full">
+          <h2 className="chart-title">📋 Tasks by Subject</h2>
+          {loading ? <p className="analytics-empty">Loading your tasks...</p> : subjectStats.length ? (
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={subjectStats}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(74,222,128,0.1)" />
+                <XAxis dataKey="subject" stroke="#64748b" />
+                <YAxis allowDecimals={false} stroke="#64748b" />
+                <Tooltip {...chartStyle} />
+                <Bar dataKey="completed" stackId="tasks" fill="#4ade80" name="Completed" />
+                <Bar dataKey="pending" stackId="tasks" fill="#fbbf24" name="In progress" />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : <p className="analytics-empty">Your subject task breakdown will appear here.</p>}
+        </section>
       </div>
     </div>
-  )
+  );
 }

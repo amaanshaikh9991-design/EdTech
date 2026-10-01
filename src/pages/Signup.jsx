@@ -7,6 +7,7 @@ export default function Signup({ onLogin }) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    school: '',
     password: '',
     confirmPassword: ''
   });
@@ -23,7 +24,6 @@ export default function Signup({ onLogin }) {
     setError('');
     setLoading(true);
 
-    // Basic validation
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       setLoading(false);
@@ -36,13 +36,14 @@ export default function Signup({ onLogin }) {
     }
 
     try {
-      // 🚀 Send data to your Backend API
       const response = await fetch('http://localhost:4000/api/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: formData.name,
-          email: formData.email
+          email: formData.email,
+          school: formData.school,
+          password: formData.password // ✅ Now sending the password!
         })
       });
 
@@ -52,10 +53,14 @@ export default function Signup({ onLogin }) {
         throw new Error(data.error || 'Signup failed');
       }
 
-      // If successful, log them in automatically and go to dashboard
+      // ✅ Save the session so the app knows who is logged in
+      localStorage.setItem('currentStudentId', data.id);
+      localStorage.setItem('currentStudentName', data.name);
+
       if (onLogin) {
-        onLogin({ name: data.name, email: data.email, role: 'Student' });
+        onLogin({ id: data.id, name: data.name, email: data.email, school: data.school, role: 'Student' });
       }
+      
       navigate('/'); // Go to dashboard
       
     } catch (err) {
@@ -101,6 +106,20 @@ export default function Signup({ onLogin }) {
               value={formData.email}
               onChange={handleChange}
               placeholder="student@educraft.edu"
+              required
+            />
+          </div>
+
+          <div className="input-group">
+            <label className="input-label"><User size={16} /> School or College</label>
+            <input
+              type="text"
+              name="school"
+              className="mc-input"
+              value={formData.school}
+              onChange={handleChange}
+              placeholder="Your school or college"
+              maxLength={160}
               required
             />
           </div>
