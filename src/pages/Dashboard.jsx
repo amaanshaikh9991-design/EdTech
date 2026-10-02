@@ -6,6 +6,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart
 } from 'recharts';
 import StatCard from '../components/StatCard';
+import { apiUrl } from '../api.js';
 import '../styles/Dashboard.css';
 
 export default function Dashboard() {
@@ -23,7 +24,7 @@ export default function Dashboard() {
       }
 
       try {
-        const res = await fetch(`http://localhost:4000/api/students/${studentId}`);
+        const res = await fetch(apiUrl(`students/${studentId}`));
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Could not load your dashboard.');
         setStudent(data);

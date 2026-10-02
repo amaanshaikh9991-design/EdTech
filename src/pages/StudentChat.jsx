@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, Bot, User, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { apiUrl } from '../api.js';
 import '../styles/StudentChat.css';
 
 // For now, we hardcode studentId 1 (Alex Johnson from our seed data)
@@ -18,7 +19,7 @@ export default function StudentChat() {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const res = await fetch(`http://localhost:4000/api/students/${STUDENT_ID}`);
+        const res = await fetch(apiUrl(`students/${STUDENT_ID}`));
         const data = await res.json();
         if (data && data.chatHistory) {
           setMessages(data.chatHistory);
@@ -52,7 +53,7 @@ export default function StudentChat() {
     setIsLoading(true);
 
     try {
-      const res = await fetch('http://localhost:4000/api/chat', {
+      const res = await fetch(apiUrl('chat'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ studentId: STUDENT_ID, message: userMessage.content })

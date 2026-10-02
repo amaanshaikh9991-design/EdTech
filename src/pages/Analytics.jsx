@@ -3,9 +3,9 @@ import {
   BarChart, Bar, PieChart, Pie, Cell, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts';
+import { apiUrl } from '../api.js';
 import '../styles/Analytics.css';
 
-const api = 'http://localhost:4000/api';
 const chartStyle = {
   contentStyle: {
     background: '#1e293b',
@@ -25,7 +25,7 @@ export default function Analytics() {
   useEffect(() => {
     const loadTasks = async () => {
       try {
-        const response = await fetch(`${api}/students/${studentId}`);
+        const response = await fetch(apiUrl(`students/${studentId}`));
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || 'Could not load your analytics.');
         setTasks(data.tasks || []);

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Check, ClipboardList, Plus, Trash2 } from 'lucide-react';
+import { apiUrl } from '../api.js';
 import '../styles/Tasks.css';
-
-const api = 'http://localhost:4000/api';
 
 function getGrade(percentage) {
   if (percentage >= 90) return 'A';
@@ -49,7 +48,7 @@ export default function Tasks() {
       }
 
       try {
-        const response = await fetch(`${api}/students/${studentId}`);
+        const response = await fetch(apiUrl(`students/${studentId}`));
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || 'Could not load your tasks.');
         setTasks(data.tasks || []);
@@ -78,7 +77,7 @@ export default function Tasks() {
     setSaving(true);
 
     try {
-      const response = await fetch(`${api}/students/${studentId}/tasks`, {
+      const response = await fetch(apiUrl(`students/${studentId}/tasks`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...form, score: Number(form.score), maxScore: Number(form.maxScore) }),
@@ -100,7 +99,7 @@ export default function Tasks() {
     setError('');
     setNotice('');
     try {
-      const response = await fetch(`${api}/students/${studentId}/tasks/${task.id}`, {
+      const response = await fetch(apiUrl(`students/${studentId}/tasks/${task.id}`), {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isComplete: !task.isComplete }),
@@ -118,7 +117,7 @@ export default function Tasks() {
     setError('');
     setNotice('');
     try {
-      const response = await fetch(`${api}/students/${studentId}/tasks/${task.id}`, { method: 'DELETE' });
+      const response = await fetch(apiUrl(`students/${studentId}/tasks/${task.id}`), { method: 'DELETE' });
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.error || 'Could not delete this task.');

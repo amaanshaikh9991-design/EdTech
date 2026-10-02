@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, AlertTriangle, TrendingUp, Users, Brain, RefreshCw } from 'lucide-react';
 import AIChat from '../components/AIChat';
+import { apiUrl } from '../api.js';
 import '../styles/AIInsights.css';
 
 export default function AIInsights() {
@@ -24,7 +25,7 @@ export default function AIInsights() {
     }
 
     try {
-      const res = await fetch(`http://localhost:4000/api/insights/${studentId}`);
+      const res = await fetch(apiUrl(`insights/${studentId}`));
       
       if (!res.ok) {
         throw new Error(`Server responded with ${res.status}`);

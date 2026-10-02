@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Pickaxe, Lock, User, Sparkles } from 'lucide-react';
+import { apiUrl } from '../api.js';
 import '../styles/Login.css';
 
 export default function Login({ onLogin }) {
@@ -16,7 +17,7 @@ export default function Login({ onLogin }) {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:4000/api/login', {
+      const response = await fetch(apiUrl('login'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })

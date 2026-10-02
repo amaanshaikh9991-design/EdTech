@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Pickaxe, Lock, User, Sparkles } from 'lucide-react';
+import { apiUrl } from '../api.js';
 import '../styles/Signup.css';
 
 export default function Signup({ onLogin }) {
@@ -36,7 +37,7 @@ export default function Signup({ onLogin }) {
     }
 
     try {
-      const response = await fetch('http://localhost:4000/api/signup', {
+      const response = await fetch(apiUrl('signup'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

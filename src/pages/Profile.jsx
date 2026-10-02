@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { GraduationCap, Save, UserRound } from 'lucide-react';
+import { apiUrl } from '../api.js';
 import '../styles/Profile.css';
-
-const api = 'http://localhost:4000/api';
 
 export default function Profile({ onProfileUpdated }) {
   const studentId = localStorage.getItem('currentStudentId');
@@ -16,7 +15,7 @@ export default function Profile({ onProfileUpdated }) {
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        const response = await fetch(`${api}/students/${studentId}`);
+        const response = await fetch(apiUrl(`students/${studentId}`));
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || 'Could not load your profile.');
         setProfile(data);
@@ -37,7 +36,7 @@ export default function Profile({ onProfileUpdated }) {
     setNotice('');
     setSaving(true);
     try {
-      const response = await fetch(`${api}/students/${studentId}`, {
+      const response = await fetch(apiUrl(`students/${studentId}`), {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
