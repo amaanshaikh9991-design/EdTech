@@ -1,5 +1,28 @@
 {
+  "services": {
+    "app": {
+      "root": ".",
+      "framework": "vite"
+    },
+
+    "server": {
+      "root": "server",
+      "framework": "express"
+    }
+  },
+
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/api/(.*)",
+      "destination": {
+        "service": "server"
+      }
+    },
+    {
+      "source": "/(.*)",
+      "destination": {
+        "service": "app"
+      }
+    }
   ]
 }
