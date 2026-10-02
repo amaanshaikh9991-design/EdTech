@@ -101,7 +101,7 @@ export default function Navbar({ onMenuClick, sidebarOpen = true, user }) {
         {/* User */}
         <div className="navbar-user">
           <span className="user-avatar-small">
-            👨‍🎓
+            {user?.avatar ? <img src={user.avatar} alt="" /> : '👨‍🎓'}
           </span>
 
           <span className="user-name-small">

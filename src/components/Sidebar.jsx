@@ -48,7 +48,9 @@ export default function Sidebar({ isOpen, onClose, user, onLogout }) {
         
         <div className="sidebar-footer">
           <div className="user-info">
-            <span className="user-avatar">👨‍🎓</span>
+            <span className="user-avatar">
+              {user?.avatar ? <img src={user.avatar} alt="" /> : '👨‍🎓'}
+            </span>
             <span className="user-name">{user?.name || localStorage.getItem('currentStudentName')}</span>
           </div>
           <button className="logout-btn" onClick={onLogout}>

@@ -34,6 +34,68 @@
   color: #4ade80;
 }
 
+.profile-avatar {
+  overflow: hidden;
+}
+
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-photo-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.profile-photo-button,
+.profile-photo-remove {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid #4ade80;
+  background: #14251c;
+  color: #86efac;
+  cursor: pointer;
+  font: 11px 'MinecraftRegular', monospace;
+}
+
+.profile-photo-button input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.profile-photo-button:focus-within,
+.profile-photo-remove:focus-visible {
+  outline: 2px solid #fbbf24;
+  outline-offset: 2px;
+}
+
+.profile-photo-remove {
+  width: 34px;
+  padding: 0;
+  border-color: #7f1d1d;
+  background: #2a171b;
+  color: #fca5a5;
+}
+
+.profile-photo-button:disabled,
+.profile-photo-remove:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
 .profile-layout {
   display: grid;
   grid-template-columns: minmax(240px, 0.8fr) minmax(0, 1.4fr);

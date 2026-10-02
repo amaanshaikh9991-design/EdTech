@@ -7,6 +7,9 @@ import '../styles/AIInsights.css';
 
 export default function AIInsights() {
   const [insights, setInsights] = useState([]);
+  const [summary, setSummary] = useState('');
+  const [metrics, setMetrics] = useState(null);
+  const [student, setStudent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState('');
@@ -32,7 +35,10 @@ export default function AIInsights() {
       }
       
       const data = await res.json();
-      setInsights(data);
+      setInsights(data.insights || []);
+      setSummary(data.summary || '');
+      setMetrics(data.metrics || null);
+      setStudent(data.student || null);
     } catch (err) {
       console.error("Failed to fetch insights:", err);
       setError("Failed to generate insights. The AI might be busy. Please try again.");
@@ -84,6 +90,12 @@ export default function AIInsights() {
         <div>
           <h1 className="page-title">🤖 My AI Insights</h1>
           <p className="page-subtitle">Personalized analysis & recommendations just for you</p>
+          {student && (
+            <div className="insight-student">
+              {student.avatar ? <img src={student.avatar} alt="" /> : <span aria-hidden="true">🎓</span>}
+              <strong>{student.name}</strong>
+            </div>
+          )}
         </div>
         <button className="refresh-btn" onClick={handleRefresh} disabled={refreshing}>
           <RefreshCw size={16} className={refreshing ? 'spinning' : ''} />
@@ -93,6 +105,17 @@ export default function AIInsights() {
 
       <div className="ai-layout">
         <div className="insights-panel">
+          {metrics && (
+            <section className="learning-summary" aria-label="Your learning summary">
+              <h2>Progress summary</h2>
+              <p>{summary || 'Keep adding tasks and marks to build your personal progress summary.'}</p>
+              <div className="learning-metrics">
+                <div><strong>{metrics.completedTasks}/{metrics.totalTasks}</strong><span>Tasks completed</span></div>
+                <div><strong>{metrics.average === null ? '—' : `${metrics.average}%`}</strong><span>Completed-task average</span></div>
+                <div><strong>{metrics.earnedMarks}/{metrics.possibleMarks}</strong><span>Marks earned</span></div>
+              </div>
+            </section>
+          )}
           <div className="section-header">
             <h2 className="section-title"><Sparkles size={18} /> Just For You</h2>
             <span className="insight-count">{insights.length} insights</span>

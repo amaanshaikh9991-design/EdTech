@@ -10,6 +10,7 @@ import AIInsights from './pages/AIInsights.jsx';
 import StudentChat from './pages/StudentChat.jsx';
 import Sidebar from './components/Sidebar.jsx';
 import Navbar from './components/Navbar.jsx';
+import { apiUrl } from './api.js';
 
 export default function App() {
   // ✅ Check localStorage immediately on load to prevent logout on refresh
@@ -30,6 +31,20 @@ export default function App() {
     desktopQuery.addEventListener('change', syncSidebar);
     return () => desktopQuery.removeEventListener('change', syncSidebar);
   }, []);
+
+  useEffect(() => {
+    if (!user?.id) return undefined;
+    let active = true;
+
+    fetch(apiUrl(`students/${user.id}`))
+      .then((response) => response.ok ? response.json() : null)
+      .then((student) => {
+        if (active && student) setUser((current) => ({ ...current, ...student }));
+      })
+      .catch(() => {});
+
+    return () => { active = false; };
+  }, [user?.id]);
 
   const handleLogin = (userData) => {
     setUser(userData);

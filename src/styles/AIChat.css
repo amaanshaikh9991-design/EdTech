@@ -43,6 +43,26 @@
   color: #4ade80;
 }
 
+.tutor-welcome {
+  margin: 12px 14px 0;
+  padding: 12px 14px;
+  border-left: 3px solid #4ade80;
+  background: rgba(74, 222, 128, 0.08);
+}
+
+.tutor-welcome strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #86efac;
+  font: 12px 'MinecraftBold', monospace;
+}
+
+.tutor-welcome p {
+  margin: 0;
+  color: #cbd5e1;
+  font: 11px/1.6 'MinecraftRegular', monospace;
+}
+
 .status-dot {
   width: 6px;
   height: 6px;
