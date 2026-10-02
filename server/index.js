@@ -376,6 +376,12 @@ app.get('/api/insights/:studentId', async (req, res) => {
     res.status(500).json({ error: "Failed to generate insights" });
   }
 });
+// 🚀 Health Check
+app.get('/', (req, res) => {
+  res.json({
+    message: 'EduCraft API is running 🚀'
+  });
+});
 
 // 🚀 Start Server
 const PORT = process.env.PORT || 4000;
