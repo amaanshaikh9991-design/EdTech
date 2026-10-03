@@ -126,10 +126,21 @@ export default function Marks() {
             <span>Assessment</span>
             <input name="title" value={form.title} onChange={updateForm} placeholder="e.g. Algebra test" maxLength={120} required />
           </label>
-          <label>
-            <span>Marks earned / total</span>
-            <input name="result" value={form.result} onChange={updateForm} placeholder="e.g. 90 / 100" inputMode="decimal" pattern="\s*\d+(\.\d+)?\s*/\s*\d+(\.\d+)?\s*" title="Enter earned marks / total marks, for example 90 / 100" required />
-          </label>
+<label>
+  <span>Marks earned / total</span>
+
+  <input
+    name="result"
+    type="text"
+    value={form.result}
+    onChange={updateForm}
+    placeholder="e.g. 29 / 30"
+    inputMode="text"
+    pattern="\s*\d+(?:\.\d+)?\s*/\s*\d+(?:\.\d+)?\s*"
+    title="Enter marks like 29 / 30"
+    required
+  />
+</label>
           <div className="marks-form-actions">
             {editingId && (
               <button className="marks-cancel" type="button" onClick={resetForm} aria-label="Cancel mark edit" title="Cancel edit">
