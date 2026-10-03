@@ -458,7 +458,6 @@ app.get(
 // =====================================================
 // MARKS - INPUT
 // =====================================================
-
 function parseMarkInput(body) {
   const subject =
     typeof body.subject === 'string'
@@ -470,12 +469,28 @@ function parseMarkInput(body) {
       ? body.title.trim()
       : 'Assessment';
 
-  const score = Number(body.score);
-  const maxScore = Number(body.maxScore);
+  const result =
+    typeof body.result === 'string'
+      ? body.result.trim()
+      : '';
+
+  const matchedResult =
+    result.match(/^(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)$/);
 
   if (
     !subject ||
     subject.length > 80 ||
+    !title ||
+    title.length > 120 ||
+    !matchedResult
+  ) {
+    return null;
+  }
+
+  const score = Number(matchedResult[1]);
+  const maxScore = Number(matchedResult[2]);
+
+  if (
     !Number.isFinite(score) ||
     !Number.isFinite(maxScore) ||
     score < 0 ||
@@ -487,7 +502,7 @@ function parseMarkInput(body) {
 
   return {
     subject,
-    title: title || 'Assessment',
+    title,
     score,
     maxScore,
   };
