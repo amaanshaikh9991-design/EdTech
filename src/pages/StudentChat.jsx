@@ -1,12 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, Bot, User, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { apiUrl } from '../api.js';
+import { apiFetch, readApiJson } from '../api.js';
+import { getCurrentStudentId } from '../session.js';
 import '../styles/StudentChat.css';
-
-// For now, we hardcode studentId 1 (Alex Johnson from our seed data)
-// In a real app, this would come from your AuthContext
-const STUDENT_ID = 1; 
 
 export default function StudentChat() {
   const [messages, setMessages] = useState([]);
@@ -14,38 +11,46 @@ export default function StudentChat() {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const navigate = useNavigate();
+  const studentId = getCurrentStudentId();
 
-  // Fetch chat history on load
   useEffect(() => {
+    if (!studentId) return undefined;
+
+    let active = true;
     const fetchHistory = async () => {
       try {
-        const res = await fetch(apiUrl(`students/${STUDENT_ID}`));
-        const data = await res.json();
-        if (data && data.chatHistory) {
+        const res = await apiFetch(`students/${studentId}`);
+        const data = await readApiJson(res, 'Could not load your chat history.');
+        if (!active) return;
+        if (Array.isArray(data.chatHistory) && data.chatHistory.length) {
           setMessages(data.chatHistory);
         } else {
-          // Welcome message if no history
           setMessages([{
             id: 'welcome',
             role: 'ai',
             content: "Hey there! ⛏️ I'm your EduCraft AI tutor. How can I help you level up your learning today?"
           }]);
         }
-      } catch (error) {
+      } catch {
         console.error("Failed to fetch history:", error);
       }
     };
     fetchHistory();
-  }, []);
+    return () => { active = false; };
+  }, [navigate, studentId]);
 
   // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  if (!studentId) {
+    return <div className="chat-page"><p role="alert">Your session is missing or expired. Please sign in again.</p></div>;
+  }
+
   const handleSend = async (e) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
+    if (!input.trim() || isLoading || !studentId) return;
 
     const userMessage = { role: 'student', content: input, createdAt: new Date() };
     setMessages(prev => [...prev, userMessage]);
@@ -53,20 +58,20 @@ export default function StudentChat() {
     setIsLoading(true);
 
     try {
-      const res = await fetch(apiUrl('chat'), {
+      const res = await apiFetch('chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ studentId: STUDENT_ID, message: userMessage.content })
+        body: JSON.stringify({ studentId, message: userMessage.content })
       });
       
-      const data = await res.json();
+      const data = await readApiJson(res, 'The AI could not respond.');
       
       if (data.reply) {
         setMessages(prev => [...prev, { role: 'ai', content: data.reply, createdAt: new Date() }]);
       } else {
         setMessages(prev => [...prev, { role: 'ai', content: "⚠️ My mining drill got stuck! Try again.", createdAt: new Date() }]);
       }
-    } catch (error) {
+    } catch {
       setMessages(prev => [...prev, { role: 'ai', content: "⚠️ Connection lost to the server.", createdAt: new Date() }]);
     } finally {
       setIsLoading(false);

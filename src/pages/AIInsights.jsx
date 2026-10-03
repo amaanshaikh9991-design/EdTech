@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Sparkles, AlertTriangle, TrendingUp, Users, Brain, RefreshCw } from 'lucide-react';
 import AIChat from '../components/AIChat';
-import { apiUrl } from '../api.js';
+import { apiFetch } from '../api.js';
+import { getCurrentStudentId } from '../session.js';
 import '../styles/AIInsights.css';
 
 export default function AIInsights() {
@@ -10,25 +10,26 @@ export default function AIInsights() {
   const [summary, setSummary] = useState('');
   const [metrics, setMetrics] = useState(null);
   const [student, setStudent] = useState(null);
+  const [marks, setMarks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState('');
-  const navigate = useNavigate();
-
-  const fetchInsights = async (isRefresh = false) => {
+  const fetchInsights = useCallback(async (isRefresh = false) => {
     if (isRefresh) {
       setRefreshing(true);
       setError('');
     }
     
-    const studentId = localStorage.getItem('currentStudentId');
+    const studentId = getCurrentStudentId();
     if (!studentId) {
-      navigate('/login');
+      setError('Your session is missing or expired. Sign in again to view your insights.');
+      setLoading(false);
+      setRefreshing(false);
       return;
     }
 
     try {
-      const res = await fetch(apiUrl(`insights/${studentId}`));
+      const res = await apiFetch(`insights/${studentId}`);
       
       if (!res.ok) {
         throw new Error(`Server responded with ${res.status}`);
@@ -39,6 +40,7 @@ export default function AIInsights() {
       setSummary(data.summary || '');
       setMetrics(data.metrics || null);
       setStudent(data.student || null);
+      setMarks(data.marks || []);
     } catch (err) {
       console.error("Failed to fetch insights:", err);
       setError("Failed to generate insights. The AI might be busy. Please try again.");
@@ -47,11 +49,12 @@ export default function AIInsights() {
       setLoading(false);
       setRefreshing(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    fetchInsights();
-  }, [navigate]);
+    const initialLoad = window.setTimeout(() => fetchInsights(), 0);
+    return () => window.clearTimeout(initialLoad);
+  }, [fetchInsights]);
 
   const handleRefresh = () => fetchInsights(true);
 
@@ -111,8 +114,16 @@ export default function AIInsights() {
               <p>{summary || 'Keep adding tasks and marks to build your personal progress summary.'}</p>
               <div className="learning-metrics">
                 <div><strong>{metrics.completedTasks}/{metrics.totalTasks}</strong><span>Tasks completed</span></div>
-                <div><strong>{metrics.average === null ? '—' : `${metrics.average}%`}</strong><span>Completed-task average</span></div>
-                <div><strong>{metrics.earnedMarks}/{metrics.possibleMarks}</strong><span>Marks earned</span></div>
+                <div><strong>{metrics.markCount}</strong><span>Marks recorded</span></div>
+              </div>
+              <div className="insight-mark-list">
+                <h3>Recent subject marks</h3>
+                {marks.length ? marks.slice(0, 5).map((mark) => (
+                  <div className="insight-mark-row" key={mark.id}>
+                    <span><strong>{mark.subject}</strong><small>{mark.title || 'Assessment'}</small></span>
+                    <strong>{mark.score} / {mark.maxScore}</strong>
+                  </div>
+                )) : <p>No marks recorded yet. Add subject results from My Marks to personalize your analysis.</p>}
               </div>
             </section>
           )}
@@ -144,9 +155,6 @@ export default function AIInsights() {
                       <div className="insight-meta">
                         <h4 className="insight-title">{insight.title}</h4>
                         <span className="insight-time">{insight.timestamp}</span>
-                      </div>
-                      <div className="confidence-badge" style={{ borderColor: color, color: color }}>
-                        {insight.confidence}%
                       </div>
                     </div>
                     <p className="insight-description">{insight.description}</p>

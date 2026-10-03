@@ -8,16 +8,17 @@ import Profile from './pages/Profile.jsx';
 import Analytics from './pages/Analytics.jsx';
 import AIInsights from './pages/AIInsights.jsx';
 import StudentChat from './pages/StudentChat.jsx';
+import Marks from './pages/Marks.jsx';
 import Sidebar from './components/Sidebar.jsx';
 import Navbar from './components/Navbar.jsx';
-import { apiUrl } from './api.js';
+import { apiFetch } from './api.js';
+import { clearStudentSession, getCurrentStudentId, getStudentSession } from './session.js';
 
 export default function App() {
   // ✅ Check localStorage immediately on load to prevent logout on refresh
   const [user, setUser] = useState(() => {
-    const savedId = localStorage.getItem('currentStudentId');
-    const savedName = localStorage.getItem('currentStudentName');
-    return savedId ? { id: savedId, name: savedName, role: 'Student' } : null;
+    const savedSession = getStudentSession();
+    return savedSession ? { ...savedSession, role: 'Student' } : null;
   });
   
   const [sidebarOpen, setSidebarOpen] = useState(() =>
@@ -36,15 +37,74 @@ export default function App() {
     if (!user?.id) return undefined;
     let active = true;
 
-    fetch(apiUrl(`students/${user.id}`))
-      .then((response) => response.ok ? response.json() : null)
-      .then((student) => {
+    const refreshStudent = async () => {
+      try {
+        const response = await apiFetch(`students/${user.id}`);
+        const student = response.ok ? await response.json() : null;
         if (active && student) setUser((current) => ({ ...current, ...student }));
-      })
-      .catch(() => {});
+      } catch {
+        // Keep the current session data visible when the API is temporarily unavailable.
+      }
+    };
 
-    return () => { active = false; };
+    refreshStudent();
+    const refreshInterval = window.setInterval(refreshStudent, 60_000);
+    window.addEventListener('student-data-changed', refreshStudent);
+
+    return () => {
+      active = false;
+      window.clearInterval(refreshInterval);
+      window.removeEventListener('student-data-changed', refreshStudent);
+    };
   }, [user?.id]);
+
+  useEffect(() => {
+    if (!user?.id) return undefined;
+    const sentKey = `task-reminders-sent:${user.id}`;
+    let sent = new Set();
+    try {
+      sent = new Set(JSON.parse(localStorage.getItem(sentKey) || '[]'));
+    } catch {
+      localStorage.removeItem(sentKey);
+    }
+
+    const timeouts = [];
+    const incompleteTasks = (user.tasks || []).filter((task) => !task.isComplete && task.dueAt);
+    for (const task of incompleteTasks) {
+      const dueAt = new Date(task.dueAt).getTime();
+      const taskKey = String(task.id);
+      if (!Number.isFinite(dueAt) || dueAt <= Date.now() || sent.has(taskKey)) continue;
+
+      const fireReminder = () => {
+        const remaining = dueAt - Date.now();
+        if (remaining > 0) {
+          timeouts.push(window.setTimeout(fireReminder, Math.min(remaining, 2_147_000_000)));
+          return;
+        }
+        if (getCurrentStudentId() !== String(user.id)) return;
+
+        let currentSent = [];
+        try {
+          currentSent = JSON.parse(localStorage.getItem(sentKey) || '[]');
+        } catch {
+          currentSent = [];
+        }
+        if (currentSent.includes(taskKey)) return;
+        localStorage.setItem(sentKey, JSON.stringify([...currentSent, taskKey]));
+
+        const message = `${task.title}${task.subject ? ` · ${task.subject}` : ''}`;
+        if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+          new Notification('Task reminder', { body: `It's time to work on ${message}.` });
+        } else {
+          window.alert(`Task reminder\n\nIt's time to work on ${message}.`);
+        }
+      };
+
+      timeouts.push(window.setTimeout(fireReminder, Math.min(dueAt - Date.now(), 2_147_000_000)));
+    }
+
+    return () => timeouts.forEach((timeout) => window.clearTimeout(timeout));
+  }, [user?.id, user?.tasks]);
 
   const handleLogin = (userData) => {
     setUser(userData);
@@ -52,8 +112,7 @@ export default function App() {
 
   const handleLogout = () => {
     setUser(null);
-    localStorage.removeItem('currentStudentId');
-    localStorage.removeItem('currentStudentName');
+    clearStudentSession();
     window.location.href = '/login';
   };
 
@@ -93,6 +152,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/tasks" element={<Tasks />} />
+              <Route path="/marks" element={<Marks />} />
               <Route path="/profile" element={<Profile onProfileUpdated={(updated) => setUser((current) => ({ ...current, ...updated }))} />} />
               <Route path="/analytics" element={<Analytics />} />
               <Route path="/ai-insights" element={<AIInsights />} />

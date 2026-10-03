@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Pickaxe, Lock, User, Sparkles } from 'lucide-react';
-import { apiUrl } from '../api.js';
+import { apiFetch, readApiJson } from '../api.js';
+import { saveStudentSession } from '../session.js';
 import '../styles/Login.css';
 
 export default function Login({ onLogin }) {
@@ -17,21 +18,16 @@ export default function Login({ onLogin }) {
     setLoading(true);
 
     try {
-      const response = await fetch(apiUrl('login'), {
+      const response = await apiFetch('login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Login failed');
-      }
+      const data = await readApiJson(response, 'Login failed');
 
       // ✅ Save the session!
-      localStorage.setItem('currentStudentId', data.id);
-      localStorage.setItem('currentStudentName', data.name);
+      saveStudentSession(data);
 
       if (onLogin) {
         onLogin(data);

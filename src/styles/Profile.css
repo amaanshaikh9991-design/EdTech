@@ -152,6 +152,47 @@
   text-align: right;
 }
 
+.profile-mark-list {
+  margin-top: 22px;
+  border-top: 1px solid #334155;
+}
+
+.profile-mark-list h3 {
+  margin: 14px 0 4px;
+  color: #cbd5e1;
+  font: 13px 'MinecraftBold', monospace;
+}
+
+.profile-mark-list > p {
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.profile-mark-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.7);
+  color: #86efac;
+  font-size: 11px;
+}
+
+.profile-mark-row span {
+  display: grid;
+  gap: 4px;
+}
+
+.profile-mark-row span strong {
+  color: #e2e8f0;
+}
+
+.profile-mark-row small {
+  color: #94a3b8;
+  font-size: 10px;
+}
+
 .profile-edit h2 {
   margin: 0 0 20px;
   color: #4ade80;

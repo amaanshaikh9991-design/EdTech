@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Pickaxe, Lock, User, Sparkles } from 'lucide-react';
-import { apiUrl } from '../api.js';
+import { apiFetch, readApiJson } from '../api.js';
+import { saveStudentSession } from '../session.js';
 import '../styles/Signup.css';
 
 export default function Signup({ onLogin }) {
@@ -37,7 +38,7 @@ export default function Signup({ onLogin }) {
     }
 
     try {
-      const response = await fetch(apiUrl('signup'), {
+      const response = await apiFetch('signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -48,15 +49,10 @@ export default function Signup({ onLogin }) {
         })
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Signup failed');
-      }
+      const data = await readApiJson(response, 'Signup failed');
 
       // ✅ Save the session so the app knows who is logged in
-      localStorage.setItem('currentStudentId', data.id);
-      localStorage.setItem('currentStudentName', data.name);
+      saveStudentSession(data);
 
       if (onLogin) {
         onLogin({ id: data.id, name: data.name, email: data.email, school: data.school, role: 'Student' });

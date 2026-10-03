@@ -164,6 +164,23 @@
   gap: 20px;
 }
 
+.chart-card-full {
+  grid-column: 1 / -1;
+}
+
+.dashboard-empty-compact {
+  min-height: 0;
+  justify-content: flex-start;
+  padding: 14px 0;
+  text-align: left;
+}
+
+.mark-dashboard-score {
+  color: #86efac;
+  font: 13px 'MinecraftBold', monospace;
+  white-space: nowrap;
+}
+
 .alerts-list {
   display: flex;
   flex-direction: column;
@@ -314,6 +331,23 @@
   background: #60a5fa;
   color: #0f0f1a;
   transform: translateY(-2px);
+}
+
+.marks-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 3px solid #4ade80;
+  background: #14251c;
+  color: #e0e0e0;
+  cursor: pointer;
+  font: 13px 'MinecraftBold', monospace;
+}
+
+.marks-btn:hover {
+  background: #4ade80;
+  color: #0f0f1a;
 }
 
 .dashboard-empty {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ListTodo, BarChart3, Brain, UserRound, LogOut, X } from 'lucide-react';
+import { LayoutDashboard, ListTodo, BarChart3, Brain, UserRound, LogOut, X, BookOpenCheck } from 'lucide-react';
+import { getCurrentStudentName } from '../session.js';
 import '../styles/Sidebar.css';
 
 export default function Sidebar({ isOpen, onClose, user, onLogout }) {
@@ -9,6 +10,7 @@ export default function Sidebar({ isOpen, onClose, user, onLogout }) {
   const links = [
     { path: '/', icon: <LayoutDashboard size={20} />, label: 'Dashboard' },
     { path: '/tasks', icon: <ListTodo size={20} />, label: 'My Tasks' },
+    { path: '/marks', icon: <BookOpenCheck size={20} />, label: 'My Marks' },
     { path: '/analytics', icon: <BarChart3 size={20} />, label: 'Analytics' },
     { path: '/ai-insights', icon: <Brain size={20} />, label: 'AI Insights' },
     { path: '/profile', icon: <UserRound size={20} />, label: 'My Profile' },
@@ -51,7 +53,7 @@ export default function Sidebar({ isOpen, onClose, user, onLogout }) {
             <span className="user-avatar">
               {user?.avatar ? <img src={user.avatar} alt="" /> : '👨‍🎓'}
             </span>
-            <span className="user-name">{user?.name || localStorage.getItem('currentStudentName')}</span>
+            <span className="user-name">{user?.name || getCurrentStudentName()}</span>
           </div>
           <button className="logout-btn" onClick={onLogout}>
             <LogOut size={18} />

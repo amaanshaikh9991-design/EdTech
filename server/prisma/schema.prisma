@@ -21,6 +21,7 @@ model Student {
 
   chatHistory ChatMessage[]
   tasks       Task[]
+  marks       Mark[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -41,9 +42,6 @@ model Task {
   studentId    Int
   title        String
   subject      String
-  score        Float
-  maxScore     Float     @default(100)
-  resultFormat String    @default("percentage")
   isComplete   Boolean   @default(false)
   dueAt        DateTime?
   completedAt  DateTime?
@@ -53,4 +51,19 @@ model Task {
   student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@index([studentId, createdAt])
+}
+
+model Mark {
+  id        Int      @id @default(autoincrement())
+  studentId Int
+  subject   String
+  title     String   @default("Assessment")
+  score     Float
+  maxScore  Float    @default(100)
+  markedAt  DateTime @default(now())
+  createdAt DateTime @default(now())
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([studentId, markedAt])
 }

@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Camera, GraduationCap, Save, Trash2, UserRound } from 'lucide-react';
-import { apiUrl } from '../api.js';
+import { apiFetch, readApiJson } from '../api.js';
+import { getCurrentStudentId } from '../session.js';
 import '../styles/Profile.css';
 
 export default function Profile({ onProfileUpdated }) {
-  const studentId = localStorage.getItem('currentStudentId');
+  const studentId = getCurrentStudentId();
   const [profile, setProfile] = useState({ name: '', email: '', school: '', grade: 'N/A', engagement: 0, tasks: [] });
   const [form, setForm] = useState({ name: '', school: '' });
   const [loading, setLoading] = useState(Boolean(studentId));
@@ -12,16 +13,24 @@ export default function Profile({ onProfileUpdated }) {
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
+  const [marksError, setMarksError] = useState('');
   const photoInput = useRef(null);
 
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        const response = await fetch(apiUrl(`students/${studentId}`));
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || 'Could not load your profile.');
+        const response = await apiFetch(`students/${studentId}`);
+        const data = await readApiJson(response, 'Could not load your profile.');
         setProfile(data);
         setForm({ name: data.name || '', school: data.school || '' });
+        try {
+          const marksResponse = await apiFetch(`students/${studentId}/marks`);
+          const marks = await readApiJson(marksResponse, 'Could not load marks.');
+          setProfile((current) => ({ ...current, marks }));
+          setMarksError('');
+        } catch (marksLoadError) {
+          setMarksError(marksLoadError.message);
+        }
       } catch (loadError) {
         setError(loadError.message);
       } finally {
@@ -38,7 +47,7 @@ export default function Profile({ onProfileUpdated }) {
     setNotice('');
     setSaving(true);
     try {
-      const response = await fetch(apiUrl(`students/${studentId}`), {
+      const response = await apiFetch(`students/${studentId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -47,7 +56,7 @@ export default function Profile({ onProfileUpdated }) {
       if (!response.ok) throw new Error(data.error || 'Could not update your profile.');
       setProfile((current) => ({ ...current, ...data }));
       setForm({ name: data.name, school: data.school || '' });
-      localStorage.setItem('currentStudentName', data.name);
+      sessionStorage.setItem('currentStudentName', data.name);
       onProfileUpdated?.(data);
       setNotice('Profile updated.');
     } catch (saveError) {
@@ -85,7 +94,7 @@ export default function Profile({ onProfileUpdated }) {
         image.src = objectUrl;
       });
 
-      const response = await fetch(apiUrl(`students/${studentId}`), {
+      const response = await apiFetch(`students/${studentId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ avatar: imageData }),
@@ -109,7 +118,7 @@ export default function Profile({ onProfileUpdated }) {
     setNotice('');
     setUploadingAvatar(true);
     try {
-      const response = await fetch(apiUrl(`students/${studentId}`), {
+      const response = await apiFetch(`students/${studentId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ avatar: '' }),
@@ -127,15 +136,8 @@ export default function Profile({ onProfileUpdated }) {
   };
 
   const tasks = profile.tasks || [];
-  const completedTasks = tasks.filter((task) => task.isComplete);
-  const completed = completedTasks.length;
-  const totalPossible = completedTasks.reduce((sum, task) => sum + task.maxScore, 0);
-  const averageMark = totalPossible
-    ? Math.round((completedTasks.reduce((sum, task) => sum + task.score, 0) / totalPossible) * 100)
-    : null;
-  const grade = averageMark === null
-    ? 'N/A'
-    : averageMark >= 90 ? 'A' : averageMark >= 80 ? 'B' : averageMark >= 70 ? 'C' : averageMark >= 60 ? 'D' : 'F';
+  const marks = profile.marks || [];
+  const completed = tasks.filter((task) => task.isComplete).length;
 
   if (loading) {
     return <div className="profile-page"><p className="profile-state">Loading your profile...</p></div>;
@@ -176,9 +178,18 @@ export default function Profile({ onProfileUpdated }) {
           <span className="profile-eyebrow">CURRENT SCHOOL</span>
           <h2>{profile.school || 'School not added'}</h2>
           <div className="profile-metrics">
-            <div><strong>{grade}</strong><span>Current grade</span></div>
-            <div><strong>{averageMark === null ? '—' : `${averageMark}%`}</strong><span>Average mark</span></div>
+            <div><strong>{marks.length}</strong><span>Marks recorded</span></div>
             <div><strong>{completed}/{tasks.length}</strong><span>Tasks completed</span></div>
+            <div><strong>{tasks.length - completed}</strong><span>Tasks to do</span></div>
+          </div>
+          <div className="profile-mark-list">
+            <h3>Recent marks</h3>
+            {marks.length ? marks.slice(0, 5).map((mark) => (
+              <div className="profile-mark-row" key={mark.id}>
+                <span><strong>{mark.subject}</strong><small>{mark.title || 'Assessment'}</small></span>
+                <strong>{mark.score} / {mark.maxScore}</strong>
+              </div>
+            )) : <p>{marksError || 'No marks recorded yet.'}</p>}
           </div>
         </section>
 

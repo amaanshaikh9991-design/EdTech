@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bell, Search, Menu } from 'lucide-react';
+import { Search, Menu } from 'lucide-react';
 import '../styles/Navbar.css';
 
 export default function Navbar({ onMenuClick, sidebarOpen = true, user }) {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(3);
 
   const handleSearch = (event) => {
     event.preventDefault();
@@ -42,61 +40,6 @@ export default function Navbar({ onMenuClick, sidebarOpen = true, user }) {
 
       {/* Right Side */}
       <div className="navbar-actions">
-
-        {/* Notifications */}
-        <button
-          className="notif-btn"
-          type="button"
-          aria-label={`Notifications${unreadCount ? `, ${unreadCount} unread` : ''}`}
-          aria-expanded={notificationsOpen}
-          aria-controls="navbar-notifications"
-          onClick={() => setNotificationsOpen((open) => !open)}
-        >
-          <Bell size={20} />
-
-          {unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
-        </button>
-
-        {notificationsOpen && (
-          <div
-            id="navbar-notifications"
-            role="status"
-            style={{
-              position: 'absolute',
-              top: 'calc(100% + 8px)',
-              right: 24,
-              width: 260,
-              padding: 16,
-              background: '#1a1a2e',
-              border: '2px solid #2d2d44',
-              borderRadius: 6,
-              color: '#e0e0e0',
-              fontFamily: 'MinecraftRegular, monospace',
-              fontSize: 13,
-              zIndex: 1,
-            }}
-          >
-            <p style={{ margin: '0 0 12px' }}>
-              {unreadCount ? `You have ${unreadCount} unread notifications.` : 'You are all caught up.'}
-            </p>
-            {unreadCount > 0 && (
-              <button
-                type="button"
-                onClick={() => setUnreadCount(0)}
-                style={{
-                  padding: 0,
-                  background: 'transparent',
-                  border: 0,
-                  color: '#4ade80',
-                  cursor: 'pointer',
-                  font: 'inherit',
-                }}
-              >
-                Mark all as read
-              </button>
-            )}
-          </div>
-        )}
 
         {/* User */}
         <div className="navbar-user">

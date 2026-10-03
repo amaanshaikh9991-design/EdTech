@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Send, Bot, User } from 'lucide-react'
-import { apiUrl } from '../api.js'
+import { apiFetch } from '../api.js'
+import { getCurrentStudentId } from '../session.js'
 import '../styles/AIChat.css'
 
 export default function AIChat() {
+  const studentId = getCurrentStudentId()
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [typing, setTyping] = useState(false)
@@ -14,11 +16,10 @@ export default function AIChat() {
   }, [messages])
 
   useEffect(() => {
-    const studentId = localStorage.getItem('currentStudentId')
     if (!studentId) return undefined
     let active = true
 
-    fetch(apiUrl(`students/${studentId}`))
+    apiFetch(`students/${studentId}`)
       .then((response) => response.ok ? response.json() : null)
       .then((student) => {
         if (active && student?.chatHistory?.length) {
@@ -31,11 +32,10 @@ export default function AIChat() {
       .catch(() => {})
 
     return () => { active = false }
-  }, [])
+  }, [studentId])
 
   const handleSend = async (message = input) => {
     const content = message.trim()
-    const studentId = localStorage.getItem('currentStudentId')
     if (!content || typing || !studentId) return
 
     setMessages((previous) => [...previous, { role: 'user', text: content }])
@@ -43,7 +43,7 @@ export default function AIChat() {
     setTyping(true)
 
     try {
-      const response = await fetch(apiUrl('chat'), {
+      const response = await apiFetch('chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ studentId, message: content }),
